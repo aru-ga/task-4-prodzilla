@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import Book from '../models/Book';
 
-// Create a new book
 export const createBook = async (req: Request, res: Response): Promise<void> => {
     const { title, author, publishedDate, isbn } = req.body;
     try {
@@ -10,14 +9,18 @@ export const createBook = async (req: Request, res: Response): Promise<void> => 
         res.status(201).json(newBook);
     } catch (error: unknown) {
         if (error instanceof Error) {
-            res.status(400).json({ message: error.message });
+            if ((error as any).code === 11000) { 
+                res.status(409).json({ message: 'Duplicate title or ISBN' });
+            } else {
+                res.status(400).json({ message: error.message });
+            }
         } else {
             res.status(500).json({ message: 'An unknown error occurred.' });
         }
     }
 };
 
-// Get all books
+
 export const getBooks = async (req: Request, res: Response): Promise<void> => {
     try {
         const books = await Book.find();
@@ -31,7 +34,6 @@ export const getBooks = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-// Get a book by ID
 export const getBookById = async (req: Request, res: Response): Promise<void> => {
     try {
         const book = await Book.findById(req.params.id);
@@ -49,13 +51,12 @@ export const getBookById = async (req: Request, res: Response): Promise<void> =>
     }
 };
 
-// Update a book by ID
 export const updateBook = async (req: Request, res: Response): Promise<void> => {
     try {
         const updatedBook = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedBook) {
             res.status(404).json({ message: 'Book not found' });
-            return; // Ensure no further execution
+            return; 
         }
         res.status(200).json(updatedBook);
     } catch (error: unknown) {
@@ -67,15 +68,14 @@ export const updateBook = async (req: Request, res: Response): Promise<void> => 
     }
 };
 
-// Delete a book by ID
 export const deleteBook = async (req: Request, res: Response): Promise<void> => {
     try {
         const deletedBook = await Book.findByIdAndDelete(req.params.id);
         if (!deletedBook) {
             res.status(404).json({ message: 'Book not found' });
-            return; // Ensure no further execution
+            return; 
         }
-        res.status(204).send(); // No content to send back
+        res.status(204).send(); 
     } catch (error: unknown) {
         if (error instanceof Error) {
             res.status(500).json({ message: error.message });

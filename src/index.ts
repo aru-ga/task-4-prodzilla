@@ -1,9 +1,11 @@
+// src/index.ts
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import session from 'express-session';
 import connectDB from './config/db';
 import bookRoutes from './routes/bookRoutes';
+import authRoutes from './routes/authRoutes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './swagger/swagger.json';
 
@@ -21,6 +23,7 @@ app.use(session({
 }));
 
 app.use('/api', bookRoutes);
+app.use('/api/auth', authRoutes); // Add auth routes
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.listen(PORT, () => {
