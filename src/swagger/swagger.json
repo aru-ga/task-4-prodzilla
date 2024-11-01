@@ -1,0 +1,59 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Books API",
+        "description": "API for managing books"
+    },
+    "paths": {
+        "/books": {
+            "post": {
+                "summary": "Add a new book",
+                "parameters": [
+                    {
+                        "name": "book",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Book"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Book": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "author": {
+                    "type": "string"
+                },
+                "publishedDate": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "isbn": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "title",
+                "author",
+                "publishedDate",
+                "isbn"
+            ]
+        }
+    }
+}
